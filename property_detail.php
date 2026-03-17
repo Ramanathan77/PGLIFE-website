@@ -2,8 +2,8 @@
 session_start();
 require "includes/database_connect.php";
 
-$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : NULL;
-$property_id = $_GET["property_id"];
+$user_id = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : NULL;
+$property_id = intval($_GET["property_id"]);
 
 $sql_1 = "SELECT *, p.id AS property_id, p.name AS property_name, c.name AS city_name 
             FROM properties p

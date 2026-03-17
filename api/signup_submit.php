@@ -5,12 +5,15 @@ $full_name = $_POST['full_name'];
 $phone = $_POST['phone'];
 $email = $_POST['email'];
 $password = $_POST['password'];
-$password = sha1($password);
+$password_hashed = password_hash($password, PASSWORD_DEFAULT);
 $college_name = $_POST['college_name'];
 $gender = $_POST['gender'];
 
-$sql = "SELECT * FROM users WHERE email='$email'";
-$result = mysqli_query($conn, $sql);
+$stmt = mysqli_prepare($conn, "SELECT id FROM users WHERE email=?");
+mysqli_stmt_bind_param($stmt, "s", $email);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+
 if (!$result) {
     $response = array("success" => false, "message" => "Something went wrong!");
     echo json_encode($response);
@@ -24,9 +27,11 @@ if ($row_count != 0) {
     return;
 }
 
-$sql = "INSERT INTO users (email, password, full_name, phone, gender, college_name) VALUES ('$email', '$password', '$full_name', '$phone', '$gender', '$college_name')";
-$result = mysqli_query($conn, $sql);
-if (!$result) {
+$stmt2 = mysqli_prepare($conn, "INSERT INTO users (email, password, full_name, phone, gender, college_name) VALUES (?, ?, ?, ?, ?, ?)");
+mysqli_stmt_bind_param($stmt2, "ssssss", $email, $password_hashed, $full_name, $phone, $gender, $college_name);
+$result2 = mysqli_stmt_execute($stmt2);
+
+if (!$result2) {
     $response = array("success" => false, "message" => "Something went wrong!");
     echo json_encode($response);
     return;

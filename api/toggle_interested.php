@@ -8,8 +8,8 @@ if (!isset($_SESSION['user_id'])) {
     return;
 }
 
-$user_id = $_SESSION['user_id'];
-$property_id = $_GET["property_id"];
+$user_id = intval($_SESSION['user_id']);
+$property_id = intval($_GET["property_id"]);
 
 $sql_1 = "SELECT * FROM interested_users_properties WHERE user_id = $user_id AND property_id = $property_id";
 $result_1 = mysqli_query($conn, $sql_1);

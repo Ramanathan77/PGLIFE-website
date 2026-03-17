@@ -5,8 +5,11 @@ require "includes/database_connect.php";
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : NULL;
 $city_name = $_GET["city"];
 
-$sql_1 = "SELECT * FROM cities WHERE name = '$city_name'";
-$result_1 = mysqli_query($conn, $sql_1);
+$stmt = mysqli_prepare($conn, "SELECT * FROM cities WHERE name = ?");
+mysqli_stmt_bind_param($stmt, "s", $city_name);
+mysqli_stmt_execute($stmt);
+$result_1 = mysqli_stmt_get_result($stmt);
+
 if (!$result_1) {
     echo "Something went wrong!";
     return;
